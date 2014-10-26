@@ -1,0 +1,22 @@
+{
+  "name": "langdetect",
+  "version": "0.1.0",
+  "description": "language-detection library for node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/newmsz/node-language-detection.git"
+  },
+  "author": "newms@newms.org",
+  "license": "Apache License, Version 2.0",
+  "bugs": {
+    "url": "https://github.com/newmsz/node-language-detection/issues"
+  },
+  "homepage": "https://github.com/newmsz/node-language-detection",
+  "dependencies": {
+    "unicode-7.0.0": "x"
+  }
+}
