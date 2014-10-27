@@ -18,7 +18,7 @@ var URL_REGEX = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:
 	BASE_FREQ = 10000,
 	CONV_THRESHOLD = 0.99999,
 	MAX_TEXT_LENGTH = 10000;
-	
+
 exports.detect = function (text) {
 	text = normalizeText(text);
 	text = reduceSpace(text);
@@ -88,7 +88,14 @@ exports.detect = function (text) {
 	    }
 	}
 
+	retlist.sort(function (a, b) { return b.prob - a.prob; });
+	
 	return retlist;
+};
+
+exports.detectOne = function (text) {
+    var langs = exports.detect(text);
+    return langs.length > 0 ? langs[0].lang : null; 
 };
 
 function normalizeText (text) {

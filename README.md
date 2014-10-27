@@ -13,13 +13,17 @@ Usage
 ```
 var langdetect = require('langdetect');
 
-console.log(langdetect.detect('Questo a che ora comincia?'));
-```
+console.log(langdetect.detect('Questo a che ora comincia? I don\'t know'));
 
-Then you will see.
+/**
+ * [ { lang: 'it', prob: 0.5714266536058858 }, { lang: 'en', prob: 0.42857225563212514 } ]
+ */
+ 
+console.log(langdetect.detectOne('Questo a che ora comincia?'));
 
-```
-[ { lang: 'it', prob: 0.9999962641757836 } ]
+/**
+ * 'it'
+ */
 ```
 
 Licence
