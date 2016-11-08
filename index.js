@@ -1,5 +1,5 @@
 var fs = require('fs'),
-	unicode = require('unicode-7.0.0');
+	unicode = require('unicode-9.0.0');
 var profiles = 'profiles';
 
 var _langlist = [];
@@ -23,30 +23,30 @@ exports.detect = function (text) {
 	text = normalizeText(text);
 	text = reduceSpace(text);
 	text = cleanText(text);
-	
+
 	var ngrams = extractNGram(text);
 	if(ngrams.length == 0) return null;
-	
+
 	var langprob = new Array(_langlist.length),
 	    priorMap = null,
 	    alpha = ALPHA_WIDTH;
-	
+
 	for(var j=0; j<langprob.length; j++) langprob[j] = 0;
-	
+
 	for(var i=0; i< TRIALS; i++) {
 	    var prob = new Array(_langlist.length),
 	        current_alpha = alpha + Math.random() * ALPHA_WIDTH;
-	    
+
 	    var updateLangProb = function (word) {
 	        if (!word || !_wordLangProbMap[word]) return false;
 
 	        var langProbMap = _wordLangProbMap[word],
 	            weight = current_alpha / BASE_FREQ;
-	        
+
 	        for (var k=0; k<prob.length; k++) {
 	            prob[k] *= weight + (langProbMap[k] ? langProbMap[k] :  0);
 	        }
-	        
+
 	        return true;
 	    }, normalizeProb = function () {
 	        var maxp = 0, sump = 0;
@@ -58,25 +58,25 @@ exports.detect = function (text) {
 	        }
 	        return maxp;
 	    }
-	    
+
         if (priorMap) {
             for(var j=0; j<prob.length; j++) prob[j] = priorMap[j];
         } else {
             for(var j=0; j<prob.length; j++) prob[j] = 1.0 / _langlist.length;
         }
-        
+
         for(var j=0;; j++) {
             var r = parseInt(Math.random() * ngrams.length);
             updateLangProb(ngrams[r]);
-            
+
             if(j % 5 == 0) {
                 if (normalizeProb(prob) > CONV_THRESHOLD || j >= ITERATION_LIMIT) break;
             }
         }
-        
+
         for(var j=0; j<langprob.length; j++) langprob[j] += (prob[j] || 0) / TRIALS;
 	}
-	
+
 	var retlist = [];
 	for(var i=0; i<langprob.length; i++) {
 	    var p = langprob[i];
@@ -89,13 +89,13 @@ exports.detect = function (text) {
 	}
 
 	retlist.sort(function (a, b) { return b.prob - a.prob; });
-	
+
 	return retlist;
 };
 
 exports.detectOne = function (text) {
     var langs = exports.detect(text);
-    return langs.length > 0 ? langs[0].lang : null; 
+    return langs.length > 0 ? langs[0].lang : null;
 };
 
 function normalizeText (text) {
@@ -111,14 +111,14 @@ function reduceSpace (text) {
 		var c = text[i];
 		if(c != ' ' || pre != ' ') ret += c;
 		pre = c;
-	} 
-	
+	}
+
 	return ret;
 }
 
 function cleanText (text) {
 	var latinCount = 0, nonLatinText = '';
-	
+
 	for(var i=0; i<text.length; i++) {
 		var c = text[i]
 		if(c <= 'z' && c >= 'A') {
@@ -127,10 +127,10 @@ function cleanText (text) {
 			nonLatinText += c;
 		}
 	}
-	
+
 	if (latinCount * 2 < nonLatinText.length)
 		return nonLatinText;
-	
+
 	return text;
 }
 
@@ -138,31 +138,31 @@ function extractNGram (text) {
     var grams_ = ' ',
         capitalword_ = false,
         list = [];
-    
+
 	for(var i=0; i<text.length; i++) {
 	    // NGram.addChar
 		var ch = normalize(text[i]),
 		    lastchar = grams_[grams_.length - 1],
 		    do_not_add = false;
-		
+
 		if(lastchar == ' ') {
 		    grams_ = ' ';
             capitalword_ = false;
             if (ch == ' ') do_not_add = true;
 		} else if(grams_.length >= N_GRAM) {
-		    grams_ = grams_.substring(1, grams_.length); 
+		    grams_ = grams_.substring(1, grams_.length);
 		}
-		
+
 		if(!do_not_add) {
 		    grams_ += ch;
-	        
+
 	        if(ch != ch.toLowerCase()) {
 	            if (lastchar != lastchar.toLowerCase()) capitalword_ = true;
 	        } else {
 	            capitalword_ = false;
-	        }    
+	        }
 		}
-	
+
 		for(var n=1; n<=N_GRAM; n++) {
 		    var w = null;
 		    // NGram.get
@@ -171,13 +171,13 @@ function extractNGram (text) {
 		        if(n >= 1 && n <= 3 && len >= n) {
 		            if(n == 1 && grams_[len - 1] != ' ') w = grams_[len - 1];
 		            else w = grams_.substring(len - n, len);
-		        } 
+		        }
 		    }
-		    
+
 		    if(w && _wordLangProbMap[w]) list.push(w);
         }
 	}
-	
+
 	return list;
 }
 
@@ -186,7 +186,7 @@ function normalize (ch) {
 	switch(ub) {
 	case 'Basic Latin': if(ch < 'A' || (ch < 'a' && ch > 'Z') || ch > 'z') ch = ' '; break;
 	case 'Latin-1 Supplement': if(LATIN1_EXCLUDED.indexOf(ch) >= 0) ch = ' '; break;
-	case 'Latin Extended-B': 
+	case 'Latin Extended-B':
 		// normalization for Romanian
 		if (ch == '\u0219') ch = '\u015f'; // Small S with comma below => with cedilla
 		if (ch == '\u021b') ch = '\u0163'; // Small T with comma below => with cedilla
@@ -202,7 +202,7 @@ function normalize (ch) {
 	case 'Hangul Syllables': ch = '\uac00'; break;
 	case 'Bopomofo':
 	case 'Bopomofo Extended': ch = '\u3105'; break;
-	case 'General Punctuation': 
+	case 'General Punctuation':
 		ch = ' ';
 		break;
 	}
@@ -227,15 +227,15 @@ function getUnicodeBlock (char) {
  */
 function prepare() {
 	var langlist = fs.readdirSync(__dirname + '/' + profiles);
-	
+
 	for(var i=0; i<langlist.length; i++) {
 		var file = langlist[i],
 			lang = file.split('.')[0],
 			profile = require(__dirname + '/' + profiles + '/' + file);
-		
+
 		if(_langlist.indexOf[lang] >= 0) throw new Error('duplicate the same language profile');
 		_langlist.push(lang);
-		
+
 		for(var word in profile.freq) {
 			if(!_wordLangProbMap[word]) _wordLangProbMap[word] = new Array(langlist.length);
 			var len = word.length;
@@ -245,11 +245,11 @@ function prepare() {
             }
 		}
 	}
-		
-	unicode.blocks.forEach(function (unicode_block) {
+
+	unicode.Block.forEach(function (unicode_block) {
 		UnicodeBlocks.push({
 			name: unicode_block,
-			regex: require('unicode-7.0.0/blocks/' + unicode_block + '/regex')
+			regex: require('unicode-9.0.0/Block/' + unicode_block + '/regex')
 		});
 	});
 }
