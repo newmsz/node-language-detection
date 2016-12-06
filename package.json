@@ -1,6 +1,6 @@
 {
   "name": "langdetect",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Language detection library for node.js",
   "keywords": ["language", "detection", "language detection"],
   "main": "index.js",
