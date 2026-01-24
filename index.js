@@ -2,7 +2,7 @@ var fs = require('fs'),
 	unicode = require('unicode-9.0.0');
 var profiles = 'profiles';
 
-var _langlist = [];
+var _langlist = [], 
 	_wordLangProbMap = {};
 
 var URL_REGEX = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi,
