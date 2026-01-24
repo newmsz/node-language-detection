@@ -1,5 +1,5 @@
 var fs = require('fs'),
-	unicode = require('unicode-9.0.0');
+	unicode = require('@unicode/unicode-9.0.0');
 var profiles = 'profiles';
 
 var _langlist = [], 
@@ -249,7 +249,7 @@ function prepare() {
 	unicode.Block.forEach(function (unicode_block) {
 		UnicodeBlocks.push({
 			name: unicode_block,
-			regex: require('unicode-9.0.0/Block/' + unicode_block + '/regex')
+			regex: require('@unicode/unicode-9.0.0/Block/' + unicode_block + '/regex')
 		});
 	});
 }

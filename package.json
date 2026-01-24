@@ -1,8 +1,12 @@
 {
   "name": "langdetect",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Language detection library for node.js",
-  "keywords": ["language", "detection", "language detection"],
+  "keywords": [
+    "language",
+    "detection",
+    "language detection"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +22,6 @@
   },
   "homepage": "https://github.com/newmsz/node-language-detection",
   "dependencies": {
-    "unicode-9.0.0": "0.7.0"
+    "@unicode/unicode-9.0.0": "^1.6.16"
   }
 }
