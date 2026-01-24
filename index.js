@@ -1,8 +1,8 @@
-var fs = require('fs'),
-	unicode = require('@unicode/unicode-9.0.0');
-var profiles = 'profiles';
+var unicode = require('@unicode/unicode-9.0.0'),
+	unicodeBlocks = require('./unicode-blocks'),
+	profilesData = require('./profiles-data');
 
-var _langlist = [], 
+var _langlist = [],
 	_wordLangProbMap = {};
 
 var URL_REGEX = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi,
@@ -226,12 +226,12 @@ function getUnicodeBlock (char) {
  * LangDetect Initialization
  */
 function prepare() {
-	var langlist = fs.readdirSync(__dirname + '/' + profiles);
+	// Load profiles from embedded data
+	var langlist = Object.keys(profilesData);
 
 	for(var i=0; i<langlist.length; i++) {
-		var file = langlist[i],
-			lang = file.split('.')[0],
-			profile = require(__dirname + '/' + profiles + '/' + file);
+		var lang = langlist[i],
+			profile = profilesData[lang];
 
 		if(_langlist.indexOf[lang] >= 0) throw new Error('duplicate the same language profile');
 		_langlist.push(lang);
@@ -246,10 +246,11 @@ function prepare() {
 		}
 	}
 
+	// Load unicode blocks from static mapping
 	unicode.Block.forEach(function (unicode_block) {
 		UnicodeBlocks.push({
 			name: unicode_block,
-			regex: require('@unicode/unicode-9.0.0/Block/' + unicode_block + '/regex')
+			regex: unicodeBlocks[unicode_block]
 		});
 	});
 }
